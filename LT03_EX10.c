@@ -5,7 +5,7 @@
 int main()
 {
     int a, b, c;
-    while (1)
+    while (0)
     {
         printf("Primeiro numero: ");
         scanf("%d", &a);
