@@ -2,7 +2,9 @@
 #include "stdio.h"
 
 /*
-Faça um programa em linguagem C que peça um número inteiro.
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que peça um número inteiro.
 Em seguida, o programa deve apresentar uma mensagem conforme a seguinte regra: 
 a. Se o valor for positivo: “Valor positivo”; 
 b. Se o valor for negativo: “Valor negativo”; 

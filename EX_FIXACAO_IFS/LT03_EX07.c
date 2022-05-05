@@ -2,7 +2,9 @@
 #include "stdio.h"
 
 /*
-Criar um algoritmo que leia 2 números. Caso o primeiro número lido seja maior que o segundo,
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Criar um algoritmo que leia 2 números. Caso o primeiro número lido seja maior que o segundo,
 imprima na tela o primeiro número menos o segundo, caso contrário mostre a soma dos dois números.
 */
 

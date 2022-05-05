@@ -1,8 +1,12 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-// Faça um programa em linguagem C que receba uma operação (caracter: + - * / ) e depois, 2 valores reais.
-// Realize apenas a operação escolhida pelo usuário.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que receba uma operação (caracter: + - * / ) e depois,
+2 valores reais. Realize apenas a operação escolhida pelo usuário.
+*/
 
 int main()
 {

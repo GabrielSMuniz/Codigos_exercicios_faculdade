@@ -1,6 +1,10 @@
 #include <stdio.h>
 
-// Programação que recebe 3 valores diferentes e retorna eles em ordem crescente no console.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Programação que recebe 3 valores diferentes e retorna eles em ordem crescente no console.
+*/
 
 int main()
 {

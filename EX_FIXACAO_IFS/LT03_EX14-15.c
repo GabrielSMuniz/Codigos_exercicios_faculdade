@@ -3,7 +3,10 @@
 #include "stdio.h"
 
 /*
-Faça um programa em Linguagem C que apresente um menu e pergunte ao usuário se ele deseja calcular:
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em Linguagem C que apresente um menu e pergunte ao usuário
+se ele deseja calcular:
 
 1) a área de um triângulo (base vezes altura dividido por 2
 2) a área de um círculo (pi multiplicado pelo raio ao quadrado)

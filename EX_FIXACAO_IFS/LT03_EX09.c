@@ -2,7 +2,9 @@
 #include "stdio.h"
 
 /*
-Faça um programa em linguagem C que leia o gênero de uma pessoa
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que leia o gênero de uma pessoa
 (‘F’ para feminino ou ‘M’ para masculino - deve ser UM caractere em maiúsculo) e a sua idade.
 Se o usuário for do sexo Feminino, apresentar a mensagem “Olá senhora, você tem ??? anos.“.
 Do contrário, apresentar a mensagem “Olá senhor, você tem ??? anos. “ Trocar ??? pela idade digitada pelo usuário.

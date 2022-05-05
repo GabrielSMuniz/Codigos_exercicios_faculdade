@@ -1,7 +1,12 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-// Faça um programa em linguagem C que leia uma valor do usuário e diga se ele é um valor igual a zero.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que leia uma valor do usuário e diga se ele
+ é um valor igual a zero.
+*/
 
 int main()
 {

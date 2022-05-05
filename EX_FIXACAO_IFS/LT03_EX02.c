@@ -1,7 +1,11 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-// Faça um programa em linguagem C que informe se uma determinada pessoa é maior de idade.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que informe se uma determinada pessoa é maior de idade.
+*/
 
 int main()
 {

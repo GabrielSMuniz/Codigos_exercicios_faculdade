@@ -1,7 +1,12 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-// Faça um programa em linguagem C que receba o valor do salário de um funcionário, se ele ganhar menos que 2 salários mínimos, acresça um bônus de 10% ao salário a receber.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que receba o valor do salário de um funcionário,
+se ele ganhar menos que 2 salários mínimos, acresça um bônus de 10% ao salário a receber.
+*/
 
 int main()
 {

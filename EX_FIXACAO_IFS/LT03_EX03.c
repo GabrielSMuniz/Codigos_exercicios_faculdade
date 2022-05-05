@@ -1,7 +1,11 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-// Faça um programa em linguagem C que informe se um número é PAR.
+/*
+Nome:..... Gabriel Muniz
+Turma:.... C_11
+Enunciado: Faça um programa em linguagem C que informe se um número é PAR.
+*/
 
 int main()
 {
