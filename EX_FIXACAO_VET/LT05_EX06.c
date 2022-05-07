@@ -1,7 +1,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 
-#define TAM 6
+#define TAM 5
 
 /*
 Nome:..... Gabriel Muniz
@@ -12,20 +12,42 @@ Após digitados, o programa deve ordenar os valores no vetor e apresentá-los na
 
 int main()
 {
-    int vet_valores[TAM];
-    int vet_valores_crescente[TAM];
+    int vet_valores[TAM],
+        menor_valor = 0,
+        troca;
 
     for (int i = 0; i < TAM; i++)
     {
         printf("Digite o %dº numero: ", i + 1);
-        scanf("%f", &vet_valores[i]);
+        scanf("%d", &vet_valores[i]);
     }
-    for (int i = 0; i < TAM - 1; i++)
-    {
-        for (int j = 0; j < TAM - 1; j++){
-            printf("%d ", vet_valores[i] < vet_valores[j] ? vet_valores[i] : vet_valores[j]);
-        }
 
+    printf("Numeros na ordem original: ");
+    for (int i = 0; i < TAM; i++)
+    {
+        printf("%d", vet_valores[i]);
+        if (i != TAM - 1)
+            printf("-");
+    }
+
+    for (int i = 0; i < TAM; i++)
+    {
+        menor_valor = i;
+        for (int j = i; j < TAM; j++)
+        {
+            menor_valor = vet_valores[menor_valor] < vet_valores[j] ? menor_valor : j;
+        }
+        troca = vet_valores[i];
+        vet_valores[i] = vet_valores[menor_valor];
+        vet_valores[menor_valor] = troca;
+    }
+    printf("\nNumeros em ordem crescente: ");
+
+    for (int i = 0; i < TAM; i++)
+    {
+        printf("%d", vet_valores[i]);
+        if (i != TAM - 1)
+            printf("-");
     }
 
     return 0;

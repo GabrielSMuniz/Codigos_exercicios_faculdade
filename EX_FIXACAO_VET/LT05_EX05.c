@@ -34,7 +34,7 @@ int main()
         maior_diferenca = abs(vet_valores[i] - media) < abs(vet_valores[maior_diferenca] - media) ? i : maior_diferenca; // soma += valores[i];
     }
     printf("A media foi: %.2f\n", media);
-    printf("O valor mais proximo da media foi o valor[%d] = %.2f", maior_diferenca, vet_valores[maior_diferenca]);
+    printf("O valor mais proximo da media foi o %dº valor: %.2f", maior_diferenca+1, vet_valores[maior_diferenca]);
 
     return 0;
 }
