@@ -2,6 +2,7 @@
 #include "stdio.h"
 #include "time.h"
 
+
 #define TAM 2
 
 /*
@@ -13,7 +14,7 @@ Populacione-a usando laço PARA (FOR) e, por fim, apresente todos os valores na 
 
 int main()
 {
-
+   
     // recebe uma seed a partir do tempo, para gerar numeros aleatorios
     srand(time(0));
 
@@ -42,8 +43,8 @@ int main()
         }
     }
     printf("\n");
-        for (int k = 0; k < TAM * 5; k++)
-            printf("-");
+    for (int k = 0; k < TAM * 5; k++)
+        printf("-");
     printf("\n");
 
     return 0;
