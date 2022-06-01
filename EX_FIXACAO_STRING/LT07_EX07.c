@@ -5,34 +5,32 @@
 /*
 Nome:..... Gabriel Muniz
 Turma:.... C_11
-Enunciado: Faça um programa em Linguagem C receba uma string
-e um caractere, e apague todas as ocorrências desse caractere
-na string.
+Enunciado: Faça um programa em Linguagem C que receba 2 nome completos
+(até 30 caracteres) e imprima-os em ordem crescente.
 */
 
 int main()
 {
-    char string[50],
-        string_crgd[50],
-        carac;
-    int index = 0;
+    char nome_1[30],
+        nome_2[30];
 
-    printf("\nDigite algo: ");
-    gets(string);
-    printf("Digite um caractere: ");
-    scanf("%c", &carac);
+    printf("\nDigite um nome: ");
+    gets(nome_1);
+    printf("Digite um outro nome: ");
+    gets(nome_2);
 
-    for (int i = 0; i < strlen(string); i++)
+    printf("Nomes em ordem crescente: ");
+
+    if (strcmp(nome_1, nome_2) < 0)
     {
-        if (string[i] != carac)
-        {
-            string_crgd[index] = string[i];
-            string_crgd[index + 1] = '\0';
-            index++;
-        }
+        printf("%s - ", nome_1);
+        printf("%s", nome_2);
     }
-
-    printf("Retorno: %s", string_crgd);
+    else
+    {
+        printf("%s - ", nome_2);
+        printf("%s", nome_1);
+    }
 
     return 0;
 }
