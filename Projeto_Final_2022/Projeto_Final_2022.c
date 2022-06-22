@@ -7,12 +7,11 @@ que simule uma carteira de vacinação (COVID).
 
 #include "stdio.h"
 #include "string.h"
-#include "math.h"
 
 #define MAX_PACIENTES 100
 #define MAX_DOSES 5
 
-int qtdPacientesCadastrados = 0;
+int qtdPacCadastrados = 0;
 
 typedef struct Data
 {
@@ -36,45 +35,51 @@ typedef struct CarteiraVacinacao
     Vacina vacina[MAX_DOSES];
 } CarteiraVacinacao;
 
-int validaNome(char nome[])
+int validaNome(char dNome[])
 {
+    int tam = strlen(dNome);
+
     // verifica se a string tem menos de 7 caracteres
-    int tam = strlen(nome);
     if (tam < 7)
         return 0;
-    // verifica se string possui 1 espaço e se a distacia dele ao início
-    // e ao final é maior que 3
-    for (int i = 0; i < tam; i++)
-    {
-        if (nome[i] == ' ')
-        {
-            if (i > 2 && i < tam - 3)
-                return 1;
-        }
-    }
-    return 0;
-}
+    // verifica os espaços no inicio
+    for (int i = 0; i < 3; i++)
+        if (dNome[i] == ' ')
+            return 0;
+    // verifica os espaços no final
+    for (int i = 0; i >= tam - 3; i--)
+        if (dNome[i] == ' ')
+            return 0;
 
-int validaTelefone(char telefone[])
-{
-    // verifica se a string tem de 11 a 12 caracteres e se
-    // o caracter inicial é 0
-    if (telefone[0] != '0' || strlen(telefone) > 12 ||
-        strlen(telefone) < 11)
-        return 0;
-    else // verifica se os demais chars são dígitos de 0-9
-        for (int i = 1; i < strlen(telefone); i++)
-            // printf("%c %d\n", telefone[i], telefone[i] - '0');
-            if (telefone[i] - '0' < 0 || telefone[i] - '0' > 9)
+    // verifica as sequencias de mais de 2 caracteres
+    for (int i = 3; i <= tam - 3; i++)
+        if (dNome[i] == ' ')
+            if (dNome[i - 3] == ' ' || dNome[i - 2] == ' ' || dNome[i - 1] == ' ' ||
+                dNome[i + 1] == ' ' || dNome[i + 2] == ' ' || dNome[i + 3] == ' ')
                 return 0;
     return 1;
 }
 
-int validaData(Data data)
+int validaTelefone(char dTelefone[])
 {
-    if (data.dia >= 1 && data.dia <= 30 &&
-        data.mes >= 1 && data.mes <= 12 &&
-        data.ano >= 1900 && data.ano <= 2022)
+    // verifica se a string tem de 11 a 12 caracteres e se
+    // o caracter inicial é 0
+    if (dTelefone[0] != '0' || strlen(dTelefone) > 12 ||
+        strlen(dTelefone) < 11)
+        return 0;
+    else // verifica se os demais chars são dígitos de 0-9
+        for (int i = 1; i < strlen(dTelefone); i++)
+            // printf("%c %d\n", telefone[i], telefone[i] - '0');
+            if (dTelefone[i] - '0' < 0 || dTelefone[i] - '0' > 9)
+                return 0;
+    return 1;
+}
+
+int validaData(Data dData)
+{
+    if (dData.dia >= 1 && dData.dia <= 30 &&
+        dData.mes >= 1 && dData.mes <= 12 &&
+        dData.ano >= 1900 && dData.ano <= 2022)
         return 1;
     else
         return 0;
@@ -182,35 +187,38 @@ void cadastraPaciente(CarteiraVacinacao *dPaciente)
         }
         __fpurge(stdin);
     }
-    qtdPacientesCadastrados++;
+    qtdPacCadastrados++;
 }
 
 //
 void buscaNomePaciente(CarteiraVacinacao *dPaciente)
 {
     char nomeBuscaPaciente[50];
+    int encontrouPaciente = 0;
+
     printf("\n--- Busca de paciente ---\nDigite um nome: ");
     gets(nomeBuscaPaciente);
 
-    for (int i = 0; i < MAX_PACIENTES; i++)
+    for (int i = 0; i < qtdPacCadastrados; i++)
     {
         if (strcmp(nomeBuscaPaciente, dPaciente[i].nome) == 0)
         {
+            encontrouPaciente = 1;
             printf("\n--- Dados do paciente ---\n");
             printf("Nome: %s\n", &dPaciente[i].nome);
             printf("Telefone: %s\n", &dPaciente[i].telefone);
-            printf("Data de nacimento: %d/%d/%d\n", dPaciente[i].data_nascimento.dia,
+            printf("Data de nacimento: %02d/%02d/%d\n", dPaciente[i].data_nascimento.dia,
                    dPaciente[i].data_nascimento.mes, dPaciente[i].data_nascimento.ano);
 
             if (validaData(dPaciente[i].vacina[0].data_aplicacao))
-                for (int j = 0; j < MAX_PACIENTES; j++)
+                for (int j = 0; j < qtdPacCadastrados; j++)
                 {
                     if (validaData(dPaciente[i].vacina[j].data_aplicacao))
                     {
                         printf("--- %dª dose ---\n", j + 1);
                         printf("Fabricante da vacina: %s\n", dPaciente[i].vacina[j].fabricante);
                         printf("Lote: %s\n", dPaciente[i].vacina[j].lote);
-                        printf("Data da aplicação: %d/%d/%d\n", dPaciente[i].vacina[j].data_aplicacao.dia,
+                        printf("Data da aplicação: %02d/%02d/%d\n", dPaciente[i].vacina[j].data_aplicacao.dia,
                                dPaciente[i].vacina[j].data_aplicacao.mes, dPaciente[i].vacina[j].data_aplicacao.ano);
                     }
                 }
@@ -219,32 +227,53 @@ void buscaNomePaciente(CarteiraVacinacao *dPaciente)
             break;
         }
     }
+    if (!encontrouPaciente)
+        printf("## Paciente não encontrado\n");
 }
 
 // Retorna os dados de todos os paciente em forma de uma tabela.
 void listaDadosPacientes(CarteiraVacinacao *dPaciente)
 {
-    printf("\n----- Lista de pacientes -----\n");
+    printf("\n----- Lista de pacientes -------------------------------\n");
+    printf("| Nome | Telefone | Data de nascimento | Doses tomadas |\n");
+    printf("--------------------------------------------------------\n");
 
     int dosesTomadas = 0;
-
-    // printa os dados cadastrais de cada paciente da base de dados passada
-    for (int i = 0; i < qtdPacientesCadastrados; i++)
+    int ordemAlfabetica[qtdPacCadastrados];
+    // inicializa o vetor
+    for (int i = 0; i < qtdPacCadastrados; i++)
+        ordemAlfabetica[i] = i;
+    // faz o bubble sort do vetor em ordem alfabetica
+    if (qtdPacCadastrados != 0)
     {
-        printf("| %s |", &dPaciente[i].nome);
-        printf(" %s |", &dPaciente[i].telefone);
-        printf(" %d/%d/%d |", dPaciente[i].data_nascimento.dia,
-               dPaciente[i].data_nascimento.mes, dPaciente[i].data_nascimento.ano);
-
-        // conta quantas vacinas foram tomadas
-        for (int j = 0; j < MAX_DOSES; j++)
+        for (int i = 0; i < qtdPacCadastrados; i++)
+            for (int j = i, bolha; j < qtdPacCadastrados; j++)
+                if (strcmp(dPaciente[i].nome, dPaciente[j].nome) > 0)
+                { // parte de troca de indice
+                    bolha = ordemAlfabetica[i];
+                    ordemAlfabetica[i] = ordemAlfabetica[j];
+                    ordemAlfabetica[j] = bolha;
+                }
+        // printa os dados cadastrais de cada paciente da base de dados passada em ordem alfabetica
+        for (int i = 0; i < qtdPacCadastrados; i++)
         {
-            if (validaData(dPaciente[i].vacina[j].data_aplicacao))
-                dosesTomadas++;
+            printf("| %s |", dPaciente[ordemAlfabetica[i]].nome);
+            printf(" %s |", dPaciente[ordemAlfabetica[i]].telefone);
+            printf(" %02d/%02d/%d |", dPaciente[ordemAlfabetica[i]].data_nascimento.dia,
+                   dPaciente[ordemAlfabetica[i]].data_nascimento.mes, dPaciente[ordemAlfabetica[i]].data_nascimento.ano);
+
+            // conta quantas vacinas foram tomadas
+            for (int j = 0; j < MAX_DOSES; j++)
+            {
+                if (validaData(dPaciente[ordemAlfabetica[i]].vacina[j].data_aplicacao))
+                    dosesTomadas++;
+            }
+            printf(" %d |", dosesTomadas);
+            printf("\n--------------------------------------------------------\n");
         }
-        printf(" %d |", dosesTomadas);
-        printf("\n------------------------------\n");
     }
+    else
+        printf("--------------------------------------------------------\n");
 }
 
 //
@@ -254,7 +283,7 @@ void qtdDosesFabricante(CarteiraVacinacao dPaciente[])
     // 0 = pfizer, 1 = janssen, 2 = astrazeneca, 3 = moderna, 4 = sinopharm, 5 = outro
     int vetDosesAplicadasFab[] = {0, 0, 0, 0, 0, 0};
 
-    for (int i = 0; i < qtdPacientesCadastrados; i++)
+    for (int i = 0; i < qtdPacCadastrados; i++)
         for (int j = 0; j < MAX_DOSES; j++)
             if (validaData(dPaciente[i].vacina[j].data_aplicacao))
             {
@@ -288,24 +317,53 @@ void qtdDosesAplicadas(CarteiraVacinacao dPaciente[])
     // cria um vetor que guarda numero de pessoas que tomaram cada uma das doses
     int vetDosesAplicadas[MAX_DOSES] = {0};
 
-    for (int i = 0; i < qtdPacientesCadastrados; i++)
+    for (int i = 0; i < qtdPacCadastrados; i++)
         for (int j = 0; j < MAX_DOSES; j++)
             if (validaData(dPaciente[i].vacina[j].data_aplicacao))
                 vetDosesAplicadas[j]++;
     printf("\n--- Quantidade de pacientes que receberam cada uma das doses ---\n");
     for (int i = 0; i < MAX_DOSES; i++)
-        printf("%dª dose: %d - Porcentagem: %d %%\n", i + 1, vetDosesAplicadas[i], vetDosesAplicadas[i] / MAX_PACIENTES * 100);
+        printf("%dª dose: %d - Porcentagem: %d %%\n", i + 1, vetDosesAplicadas[i], 100 * vetDosesAplicadas[i] / MAX_PACIENTES);
 }
 
-void inicializaSistema()
+void inicializaSistema(CarteiraVacinacao *dPaciente)
 {
+    char nomeAleatorio[][50] = {"João Ferreira Oliveira", "Manoel Costa Barbosa", "Flávia Carvalhoso Abreu", "Muhammad Vidigal Canedo", "Alessandro Keil Durães", "Vilma Bacelar Conceição", "Micaela Mena Breia", "Marisa Varela Pureza", "Brian Frazão Aranha", "Vitória Alcoforado Mata", "Sasha Espinosa Júdice", "Ezra Carregueiro Anjos", "Rahyssa Vital Mata", "Cristina Rufino Colares", "Iago Anhaia Lameiras"};
+    char telefoneAleatorio[][13] = {"04648157523", "024564801934", "069244205532", "09096051280", "05357082419", "01400677581", "072090454763", "02892867272", "012552830737", "08749787111", "03133570897", "058148591722", "045629148219", "04438880076", "07248632472"};
+    Data dataNascimentoAleatorio[] = {{3, 6, 2000}, {3, 2, 2012}, {13, 1, 2000}, {30, 10, 1962}, {18, 5, 1955}, {25, 4, 2009}, {2, 5, 2013}, {16, 12, 1985}, {25, 1, 2018}, {10, 12, 1968}, {4, 6, 1964}, {8, 8, 2013}, {19, 9, 1927}, {26, 10, 2006}, {3, 10, 1931}};
 
+    for (int i = 0; i < 15; i++)
+    {
+
+        if (!validaNome(nomeAleatorio[i]))
+        {
+            printf("Erro nome - Posição: %d\n", i);
+            break;
+        }
+        if (!validaTelefone(telefoneAleatorio[i]))
+        {
+            printf("Erro telefone - Posição: %d\n", i);
+            break;
+        }
+        if (!validaData(dataNascimentoAleatorio[i]))
+        {
+            printf("Erro data nascimento - Posição: %d\n", i);
+            break;
+        }
+        strcpy(dPaciente[i].nome, nomeAleatorio[i]);
+        strcpy(dPaciente[i].telefone, telefoneAleatorio[i]);
+        dPaciente[i].data_nascimento = dataNascimentoAleatorio[i];
+
+        qtdPacCadastrados++;
+    }
 }
 
 int main()
 {
     system("clear");
     CarteiraVacinacao paciente[MAX_PACIENTES];
+
+    inicializaSistema(&paciente);
     int opcao;
     do
     {
@@ -326,7 +384,7 @@ int main()
         switch (opcao)
         {
         case 1:
-            cadastraPaciente(&paciente[qtdPacientesCadastrados]);
+            cadastraPaciente(&paciente[qtdPacCadastrados]);
             break;
         case 2:
             buscaNomePaciente(&paciente);
