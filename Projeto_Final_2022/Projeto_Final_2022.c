@@ -13,29 +13,116 @@ que simule uma carteira de vacinação (COVID).
 
 int qtdPacCadastrados = 0;
 
+// STRUCTS
+
 typedef struct Data
 {
     int dia;
     int mes;
     int ano;
 } Data;
-
 typedef struct Vacina
 {
     char fabricante[50];
     char lote[50];
     Data data_aplicacao;
 } Vacina;
-
 typedef struct CarteiraVacinacao
 {
     char nome[50];
-    char telefone[12];
+    char telefone[20];
     Data data_nascimento;
     Vacina vacina[MAX_DOSES];
 } CarteiraVacinacao;
 
-int validaNome(char dNome[])
+// PROTÓTIPOS
+
+// Função que recebe uma string nome e retorna 1 se for válida e 0 se não for
+int validaNome(char *dNome);
+
+// Função que recebe uma string telefone e retorna 1 se for válida e 0 se não for
+int validaTelefone(char *dTelefone);
+
+// Função que recebe uma struct Data e retorna 1 se for válida e 0 se não for
+int validaData(Data dData);
+
+// Função para o cadastro de um novo paciente no sistema
+void cadastraPaciente(CarteiraVacinacao *dPaciente);
+
+/*
+Busca um paciente pelo nome inserido e imprime as suas credenciais
+registradas do banco de dados especificado
+ */
+void buscaNomePaciente(CarteiraVacinacao *dPaciente, char *dNomeBusca);
+
+// Imprime os dados de todos os paciente em forma de uma tabela.
+void listaDadosPacientes(CarteiraVacinacao *dPaciente);
+
+// Imprime a quantidade doses aplicadas por fabricante
+void qtdDosesFabricante(CarteiraVacinacao *dPaciente);
+
+// Imprime a quantidade em valor e em porcentagem dos paciente que tomou cada uma das doses
+void qtdDosesAplicadas(CarteiraVacinacao *dPaciente);
+
+// Inicializa o sistema com os valores correspondentes de cada paciente no banco de dados especificado
+void inicializaSistema(CarteiraVacinacao *dPaciente);
+
+int main()
+{
+    CarteiraVacinacao paciente[MAX_PACIENTES];
+    char nomeBuscaPac[50];
+    int opcao;
+
+    // system("clear");
+    inicializaSistema(&paciente);
+
+    do
+    {
+        printf("\n=========== SISTEMA COVID ==========================\n");
+        printf("(1) Cadastrar um paciente\n");
+        printf("(2) Buscar paciente pelo nome\n");
+        printf("(3) Listar pacientes cadastrados\n");
+        printf("(4) Quantidade doses aplicadas de cada fabricante\n");
+        printf("(5) Quantidade de pacientes vacinados por cada dose\n");
+        printf("(6) Sair do sistema\n");
+        printf("============== MENU ================================\n");
+        printf("Digite uma opção: ");
+
+        scanf("%d", &opcao);
+        __fpurge(stdin);
+
+        switch (opcao)
+        {
+        case 1:
+            cadastraPaciente(&paciente[qtdPacCadastrados]);
+            break;
+        case 2:
+            printf("\n--- Busca de paciente ---\nDigite um nome: ");
+            gets(nomeBuscaPac);
+            buscaNomePaciente(&paciente, nomeBuscaPac);
+            break;
+        case 3:
+            listaDadosPacientes(&paciente);
+            break;
+        case 4:
+            qtdDosesFabricante(&paciente);
+            break;
+        case 5:
+            qtdDosesAplicadas(&paciente);
+            break;
+        case 6:
+            printf("Saindo do sistema...\n");
+            break;
+        default:
+            printf("## Opção inválida\n");
+            break;
+        }
+    } while (opcao != 6);
+
+    return 0;
+}
+
+int validaNome(char *dNome)
 {
     int tam = strlen(dNome);
 
@@ -60,7 +147,7 @@ int validaNome(char dNome[])
     return 1;
 }
 
-int validaTelefone(char dTelefone[])
+int validaTelefone(char *dTelefone)
 {
     // verifica se a string tem de 11 a 12 caracteres e se
     // o caracter inicial é 0
@@ -190,18 +277,13 @@ void cadastraPaciente(CarteiraVacinacao *dPaciente)
     qtdPacCadastrados++;
 }
 
-//
-void buscaNomePaciente(CarteiraVacinacao *dPaciente)
+void buscaNomePaciente(CarteiraVacinacao *dPaciente, char *dNomeBusca)
 {
-    char nomeBuscaPaciente[50];
     int encontrouPaciente = 0;
-
-    printf("\n--- Busca de paciente ---\nDigite um nome: ");
-    gets(nomeBuscaPaciente);
 
     for (int i = 0; i < qtdPacCadastrados; i++)
     {
-        if (strcmp(nomeBuscaPaciente, dPaciente[i].nome) == 0)
+        if (strcmp(dNomeBusca, dPaciente[i].nome) == 0)
         {
             encontrouPaciente = 1;
             printf("\n--- Dados do paciente ---\n");
@@ -231,7 +313,6 @@ void buscaNomePaciente(CarteiraVacinacao *dPaciente)
         printf("## Paciente não encontrado\n");
 }
 
-// Retorna os dados de todos os paciente em forma de uma tabela.
 void listaDadosPacientes(CarteiraVacinacao *dPaciente)
 {
     printf("\n----- Lista de pacientes -------------------------------\n");
@@ -239,21 +320,25 @@ void listaDadosPacientes(CarteiraVacinacao *dPaciente)
     printf("--------------------------------------------------------\n");
 
     int dosesTomadas = 0;
-    int ordemAlfabetica[qtdPacCadastrados];
-    // inicializa o vetor
-    for (int i = 0; i < qtdPacCadastrados; i++)
-        ordemAlfabetica[i] = i;
-    // faz o bubble sort do vetor em ordem alfabetica
+
     if (qtdPacCadastrados != 0)
     {
+        int ordemAlfabetica[qtdPacCadastrados];
+
+        // inicializa o vetor
         for (int i = 0; i < qtdPacCadastrados; i++)
-            for (int j = i, bolha; j < qtdPacCadastrados; j++)
-                if (strcmp(dPaciente[i].nome, dPaciente[j].nome) > 0)
+            ordemAlfabetica[i] = i;
+
+        // faz o bubble sort do vetor em ordem alfabetica
+        for (int i = 0; i < qtdPacCadastrados - 1; i++)
+            for (int j = i + 1, bolha; j < qtdPacCadastrados; j++)
+                if (strcmp(dPaciente[ordemAlfabetica[i]].nome, dPaciente[ordemAlfabetica[j]].nome) > 0)
                 { // parte de troca de indice
                     bolha = ordemAlfabetica[i];
                     ordemAlfabetica[i] = ordemAlfabetica[j];
                     ordemAlfabetica[j] = bolha;
                 }
+
         // printa os dados cadastrais de cada paciente da base de dados passada em ordem alfabetica
         for (int i = 0; i < qtdPacCadastrados; i++)
         {
@@ -263,6 +348,7 @@ void listaDadosPacientes(CarteiraVacinacao *dPaciente)
                    dPaciente[ordemAlfabetica[i]].data_nascimento.mes, dPaciente[ordemAlfabetica[i]].data_nascimento.ano);
 
             // conta quantas vacinas foram tomadas
+            dosesTomadas = 0;
             for (int j = 0; j < MAX_DOSES; j++)
             {
                 if (validaData(dPaciente[ordemAlfabetica[i]].vacina[j].data_aplicacao))
@@ -276,8 +362,7 @@ void listaDadosPacientes(CarteiraVacinacao *dPaciente)
         printf("--------------------------------------------------------\n");
 }
 
-//
-void qtdDosesFabricante(CarteiraVacinacao dPaciente[])
+void qtdDosesFabricante(CarteiraVacinacao *dPaciente)
 {
     // cria um vetor que guarda numero de pessoas que tomaram cada uma das doses
     // 0 = pfizer, 1 = janssen, 2 = astrazeneca, 3 = moderna, 4 = sinopharm, 5 = outro
@@ -311,8 +396,7 @@ void qtdDosesFabricante(CarteiraVacinacao dPaciente[])
     printf("Outras: %d\n", vetDosesAplicadasFab[5]);
 }
 
-//
-void qtdDosesAplicadas(CarteiraVacinacao dPaciente[])
+void qtdDosesAplicadas(CarteiraVacinacao *dPaciente)
 {
     // cria um vetor que guarda numero de pessoas que tomaram cada uma das doses
     int vetDosesAplicadas[MAX_DOSES] = {0};
@@ -328,82 +412,40 @@ void qtdDosesAplicadas(CarteiraVacinacao dPaciente[])
 
 void inicializaSistema(CarteiraVacinacao *dPaciente)
 {
-    char nomeAleatorio[][50] = {"João Ferreira Oliveira", "Manoel Costa Barbosa", "Flávia Carvalhoso Abreu", "Muhammad Vidigal Canedo", "Alessandro Keil Durães", "Vilma Bacelar Conceição", "Micaela Mena Breia", "Marisa Varela Pureza", "Brian Frazão Aranha", "Vitória Alcoforado Mata", "Sasha Espinosa Júdice", "Ezra Carregueiro Anjos", "Rahyssa Vital Mata", "Cristina Rufino Colares", "Iago Anhaia Lameiras"};
-    char telefoneAleatorio[][13] = {"04648157523", "024564801934", "069244205532", "09096051280", "05357082419", "01400677581", "072090454763", "02892867272", "012552830737", "08749787111", "03133570897", "058148591722", "045629148219", "04438880076", "07248632472"};
-    Data dataNascimentoAleatorio[] = {{3, 6, 2000}, {3, 2, 2012}, {13, 1, 2000}, {30, 10, 1962}, {18, 5, 1955}, {25, 4, 2009}, {2, 5, 2013}, {16, 12, 1985}, {25, 1, 2018}, {10, 12, 1968}, {4, 6, 1964}, {8, 8, 2013}, {19, 9, 1927}, {26, 10, 2006}, {3, 10, 1931}};
+    CarteiraVacinacao initPacientes[] = {{"João Ferreira Oliveira", "04648157523", {12, 11, 1988}, {{"pfizer", "XXII09_843", {14, 10, 2022}}, {"pfizer", "XXIV08_290", {27, 9, 2020}}, {"pfizer", "XXII09_170", {15, 5, 2021}}, {"pfizer", "XXII09_799", {14, 6, 2021}}, {"pfizer", "XXII09_603", {1, 7, 2020}}}},
+                                         {"Manoel Costa Barbosa", "024564801934", {17, 7, 1957}, {{"pfizer", "XXII09_308", {24, 8, 2021}}, {"pfizer", "XXIV08_20", {1, 10, 2020}}, {"pfizer", "XXII09_808", {9, 4, 2020}}, {"pfizer", "XXII09_992", {1, 5, 2022}}, {"pfizer", "XXII09_379", {28, 7, 2021}}, {"pfizer", "XXII03_379", {30, 10, 2022}}}},
+                                         {"Flávia Carvalhoso Abreu", "069244205532", {5, 7, 2014}, {{"moderna", "XXII09_320", {19, 6, 2022}}, {"pfizer", "XXIV08_721", {8, 8, 2022}}, {"astrazeneca", "XXII09_43", {7, 5, 2022}}}},
+                                         {"Muhammad Vidigal Canedo", "09096051280", {19, 9, 2016}, {{"moderna", "XXII09_34", {4, 7, 2021}}, {"moderna", "XXIV08_838", {24, 7, 2021}}, {"moderna", "XXII09_817", {14, 5, 2021}}, {"moderna", "XXII09_168", {23, 12, 2020}}}},
+                                         {"Alessandro Keil Durães", "05357082419", {16, 10, 2017}, {{"sinopharm", "XXII09_71", {24, 2, 2022}}, {"moderna", "XXIV08_511", {26, 10, 2021}}}},
+                                         {"Vilma Bacelar Conceição", "01400677581", {26, 11, 1975}, {{"janssen", "XXII09_940", {20, 1, 2022}}, {"janssen", "XXIV08_7", {14, 12, 2022}}, {"janssen", "XXII09_544", {24, 9, 2022}}}},
+                                         {"Micaela Mena Breia", "072090454763", {10, 2, 1973}},
+                                         {"Marisa Varela Pureza", "02892867272", {17, 3, 1989}, {{"janssen", "XXII09_834", {15, 12, 2022}}, {"astrazeneca", "XXIV08_635", {6, 12, 2020}}, {"pfizer", "XXII09_998", {29, 7, 2020}}}},
+                                         {"Brian Frazão Aranha", "012552830737", {13, 8, 2012}, {{"astrazeneca", "XXII09_697", {10, 6, 2021}}, {"astrazeneca", "XXIV08_97", {6, 2, 2021}}}},
+                                         {"Vitória Alcoforado Mata", "08749787111", {4, 7, 1979}},
+                                         {"Sasha Espinosa Júdice", "03133570897", {16, 12, 2001}, {{"astrazeneca", "XXII09_196", {20, 11, 2022}}}},
+                                         {"Ezra Carregueiro Anjos", "058148591722", {7, 2, 1942}},
+                                         {"Rahyssa Vital Mata", "045629148219", {26, 4, 1972}, {{"astrazeneca", "XXII09_303", {2, 4, 2022}}}},
+                                         {"Cristina Rufino Colares", "04438880076", {19, 7, 1953}, {{"sinopharm", "XXII09_183", {5, 7, 2020}}}},
+                                         {"Iago Anhaia Lameiras", "07248632472", {15, 10, 1976}}};
 
-    for (int i = 0; i < 15; i++)
+    for (int i = 0; i < sizeof initPacientes / sizeof initPacientes[0]; i++)
     {
-
-        if (!validaNome(nomeAleatorio[i]))
+        if (!validaNome(initPacientes[i].nome))
         {
             printf("Erro nome - Posição: %d\n", i);
             break;
         }
-        if (!validaTelefone(telefoneAleatorio[i]))
+        if (!validaTelefone(initPacientes[i].telefone))
         {
             printf("Erro telefone - Posição: %d\n", i);
             break;
         }
-        if (!validaData(dataNascimentoAleatorio[i]))
+        if (!validaData(initPacientes[i].data_nascimento))
         {
             printf("Erro data nascimento - Posição: %d\n", i);
             break;
         }
-        strcpy(dPaciente[i].nome, nomeAleatorio[i]);
-        strcpy(dPaciente[i].telefone, telefoneAleatorio[i]);
-        dPaciente[i].data_nascimento = dataNascimentoAleatorio[i];
-
+        dPaciente[i] = initPacientes[i];
         qtdPacCadastrados++;
     }
-}
-
-int main()
-{
-    system("clear");
-    CarteiraVacinacao paciente[MAX_PACIENTES];
-
-    inicializaSistema(&paciente);
-    int opcao;
-    do
-    {
-        printf("\n=========== SISTEMA COVID ==========================\n");
-        printf("(1) Cadastrar um paciente\n");
-        printf("(2) Buscar paciente pelo nome\n");
-        printf("(3) Listar pacientes cadastrados\n");
-        printf("(4) Quantidade doses aplicadas de cada fabricante\n");
-        printf("(5) Quantidade de pacientes vacinados por cada dose\n");
-        printf("(6) Sair do sistema\n");
-
-        printf("============== MENU ================================\n");
-        printf("Digite uma opção: ");
-
-        scanf("%d", &opcao);
-        __fpurge(stdin);
-
-        switch (opcao)
-        {
-        case 1:
-            cadastraPaciente(&paciente[qtdPacCadastrados]);
-            break;
-        case 2:
-            buscaNomePaciente(&paciente);
-            break;
-        case 3:
-            listaDadosPacientes(&paciente);
-            break;
-        case 4:
-            qtdDosesFabricante(&paciente);
-            break;
-        case 5:
-            qtdDosesAplicadas(&paciente);
-            break;
-        case 6:
-            printf("Saindo do sistema...\n");
-            break;
-        default:
-            printf("## Opção inválida\n");
-            break;
-        }
-    } while (opcao != 6);
 }
