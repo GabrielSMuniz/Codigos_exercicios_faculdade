@@ -8,6 +8,8 @@ que simule uma carteira de vacinação (COVID).
 #include "stdio.h"
 #include "string.h"
 
+// CONSTANTES
+
 #define MAX_PACIENTES 100
 #define MAX_DOSES 5
 
@@ -74,7 +76,7 @@ int main()
     int opcao;
 
     // INICIALIZAÇÃO
-    
+
     system("clear");
     inicializaSistema(&paciente);
 
@@ -418,12 +420,12 @@ void qtdDosesAplicadas(CarteiraVacinacao *dPaciente)
     // cria um vetor que guarda numero de pessoas que tomaram cada uma das doses
     int vetDosesAplicadas[MAX_DOSES] = {0};
 
-    for (int i = 0; i < qtdPacCadastrados; i++)
-        for (int j = 0; j < MAX_DOSES; j++)
-            if (validaData(dPaciente[i].vacina[j].data_aplicacao))
-                vetDosesAplicadas[j]++;
+    for (int i = 0; i < qtdPacCadastrados; i++)                    // vai de paciente por paciente
+        for (int j = 0; j < MAX_DOSES; j++)                        // dose por dose
+            if (validaData(dPaciente[i].vacina[j].data_aplicacao)) // valida data da aplicação para saber se tem vacina cadastrada
+                vetDosesAplicadas[j]++;                            // se tiver vacina então soma um valor a mais no vetor correspondente
     printf("\n--- Quantidade de pacientes que receberam cada uma das doses ---\n");
-    for (int i = 0; i < MAX_DOSES; i++)
+    for (int i = 0; i < MAX_DOSES; i++) // imprime os valores resultantes
         printf("%dª dose: %d - Porcentagem: %d %%\n", i + 1, vetDosesAplicadas[i], 100 * vetDosesAplicadas[i] / MAX_PACIENTES);
 }
 
